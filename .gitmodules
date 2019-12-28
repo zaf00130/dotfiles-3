@@ -7,3 +7,6 @@
 [submodule ".vim/pack/package/start/vim-airline-themes"]
 	path = .vim/pack/package/start/vim-airline-themes
 	url = https://github.com/vim-airline/vim-airline-themes.git
+[submodule ".vim/pack/package/start/vim-renamer"]
+	path = .vim/pack/package/start/vim-renamer
+	url = https://github.com/qpkorr/vim-renamer.git
