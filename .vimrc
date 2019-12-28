@@ -141,13 +141,13 @@ set wildmode=list:longest		" 全マッチを列挙し最長の文字列まで補
 " ------------------------------------------------------------------------------
 set tabstop=8				" 互換のためタブは8文字のままにしておく
 autocmd vimrc FileType c          setlocal expandtab shiftwidth=4 softtabstop=4
-autocmd vimrc FileType sh         setlocal expandtab shiftwidth=2 softtabstop=2
-autocmd vimrc FileType awk        setlocal expandtab shiftwidth=2 softtabstop=2
-autocmd vimrc FileType xml        setlocal expandtab shiftwidth=2 softtabstop=2
-autocmd vimrc FileType html       setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd vimrc FileType sh         setlocal expandtab shiftwidth=4 softtabstop=4
+autocmd vimrc FileType awk        setlocal expandtab shiftwidth=4 softtabstop=4
+autocmd vimrc FileType xml        setlocal expandtab shiftwidth=4 softtabstop=4
+autocmd vimrc FileType html       setlocal expandtab shiftwidth=4 softtabstop=4
 autocmd vimrc FileType python     setlocal expandtab shiftwidth=4 softtabstop=4
-autocmd vimrc FileType fortran    setlocal expandtab shiftwidth=2 softtabstop=2
-autocmd vimrc FileType javascript setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd vimrc FileType fortran    setlocal expandtab shiftwidth=4 softtabstop=4
+autocmd vimrc FileType javascript setlocal expandtab shiftwidth=4 softtabstop=4
 " ------------------------------------------------------------------------------
 " fortran specific
 " ------------------------------------------------------------------------------
@@ -155,368 +155,27 @@ let fortran_free_source=1		" 自由形式を有効にする
 let fortran_do_enddo=1			" doループのインデント
 let fortran_indent_less=1		" プログラム単位のインデントを無効化
 " ------------------------------------------------------------------------------
-" plugin (NeoBundle)
-" ------------------------------------------------------------------------------
-filetype plugin indent off		" Required by Neobundle
-if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim
-  call neobundle#rc(expand('~/.vim/bundle/'))
-endif
-NeoBundle 'Shougo/vimproc', {
-  \ 'build' : {
-    \ 'windows' : 'make -f make_mingw32.mak',
-    \ 'cygwin'  : 'make -f make_cygwin.mak',
-    \ 'mac'     : 'make -f make_mac.mak',
-    \ 'unix'    : 'make -f make_unix.mak',
-  \ },
-\ }
-" ------------------------------------------------------------------------------
-" unite
-" ------------------------------------------------------------------------------
-NeoBundle 'Shougo/unite.vim', {'depends' : ['Shougo/vimproc']}
-nnoremap [unite]    <Nop>|			" unite ショートカット
-nmap     <Space>u [unite]|			" <Space>u で prefix
-nnoremap [unite]<Space> :<C-u>Unite |	" Unite のみ入力
-nnoremap [unite]b :<C-u>Unite -auto-preview buffer<CR>|		" バッファ一覧
-nnoremap [unite]f :<C-u>Unite -no-quit -auto-preview find<CR>|	" find
-nnoremap [unite]g :<C-u>Unite -no-quit -auto-preview grep<CR>|	" grep
-nnoremap [unite]G :<C-u>Unite -no-quit -auto-preview grep:%<CR>|" バッファ grep
-" ------------------------------------------------------------------------------
-" other plugins
-" ------------------------------------------------------------------------------
-NeoBundle 'ujihisa/neco-look'			" 英単語補完(require neocompl..)
-NeoBundle 'vim-jp/vimdoc-ja'			" 日本語ヘルプ
-NeoBundle 'deton/jasegment.vim'			" 日本語の文節でWORD移動
-NeoBundle 'tomtom/tcomment_vim'			" gc,gcc でコメント切り替え
-" NeoBundle 'scrooloose/nerdcommenter'		" \c<Space> でコメント切り替え
-NeoBundle 'tpope/vim-surround'			" visualモードでS<文字>で囲む
-NeoBundle 'thinca/vim-qfreplace'		" quickfix で grep & replace
-NeoBundle 'Shougo/vinarise.vim'			" バイナリエディタ
-NeoBundle 'Lokaltog/vim-easymotion'		" \\jkwb で移動を簡単にする
-NeoBundle 'guns/xterm-color-table.vim'		" xterm のカラーテーブル表示
-" ------------------------------------------------------------------------------
-" eregex
-" ------------------------------------------------------------------------------
-NeoBundle 'othree/eregex.vim'			" perl互換の正規表現 (M/,%S)
-let g:eregex_default_enable=0			" デフォルトで上書きしない
-" ------------------------------------------------------------------------------
-" ctrlp
-" ------------------------------------------------------------------------------
-NeoBundle 'kien/ctrlp.vim'
-nnoremap <silent> <Space><C-p> :<C-u>CtrlP<CR>|	" yankringと被るため<Space>追加
-" ------------------------------------------------------------------------------
 " appearance
 " ------------------------------------------------------------------------------
-NeoBundle 'ujihisa/unite-colorscheme'		" Unite でカラースキーマを表示
-syntax on					" カラー表示
-set t_Co=256					" ターミナルで256色対応
-" ベル無効化 (Vim 起動後に設定することで CUI/GUI の両方に対応させている)
-autocmd vimrc VimEnter * set visualbell t_vb=
-NeoBundle 'tomasr/molokai'
-NeoBundle 'Pychimp/vim-luna'
-NeoBundle 'Shougo/neobundle.vim'
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'baskerville/bubblegum'
-NeoBundle 'wombat256.vim'
-NeoBundle 'chriskempson/vim-tomorrow-theme'
-NeoBundle 'jnurmine/Zenburn'
-NeoBundle 'vim-scripts/Ambient-Color-Scheme'
-NeoBundle 'twerth/ir_black'
-set background=dark				" 背景は暗め
-" colorscheme ir_black
-colorscheme molokai				" pop な配色
+syntax on				" カラー表示
+set t_Co=256				" ターミナルで256色に対応
+set background=dark			" 背景は暗め
+highlight Normal  ctermbg=NONE		" 背景透過
+highlight Visual  ctermbg=darkgray	" 選択範囲を明るく
+highlight Comment ctermfg=gray		" コメントを明るく
+set listchars=tab:>\ ,trail:_,nbsp:@	" 不可視文字を可視化
+highlight CursorLine gui=underline guifg=NONE guibg=NONE
+highlight CursorLine term=underline cterm=underline ctermfg=NONE ctermbg=None
+" ------------------------------------------------------------------------------
+" color scheme
+" ------------------------------------------------------------------------------
+colorscheme molokai
 let g:molokai_original=0
 let g:rehash256=1
-highlight Normal  ctermbg=NONE			" 背景透過
-highlight Visual  ctermbg=darkgray		" 選択範囲を明るく
-highlight Comment ctermfg=gray			" コメントを明るく
-" colorscheme bubblegum				" 淡い配色
-" colorscheme luna				" pop な配色
-" colorscheme wombat256mod			" 256色対応 wombat
-" colorscheme solarized				" solarized
-" let g:solarized_termcolors=256		" 256色対応
-" let g:solarized_contrast="high"		" コントラストを高めに
-" let g:solarized_termtrans=1			" 透過処理を有効にする
-" NeoBundle 'vim-scripts/trailing-whitespace'	" trailing-whitespace を赤色表示
-set listchars=tab:>\ ,trail:_,nbsp:@		" 不可視文字を可視化
-highlight CursorLine gui=underline guifg=NONE guibg=NONE
-highlight CursorLine term=underline cterm=underline ctermfg=NONE ctermbg=NONE
-let g:my_syntax_status='on'
-function! s:my_toggle_syntax()
-  if g:my_syntax_status=='on'
-    syntax off
-    let g:my_syntax_status='off'
-  else
-    syntax on
-    let g:my_syntax_status='on'
-  endif
-endfunction
-nnoremap [appr] <Nop>|				" appr 設定ショートカット
-nmap     <Space>a [appr]|			" <Space>a で prefix
-nnoremap <silent> [appr]l :<C-u>set list!<CR>|			" カーソル
-nnoremap <silent> [appr]c :<C-u>set cursorline!<CR>| 		" 不可視文字
-nnoremap <silent> [appr]s :<C-u>call s:my_toggle_syntax()<CR>|	" syntax
 " ------------------------------------------------------------------------------
-" pretty status line
+" airline
 " ------------------------------------------------------------------------------
-" NeoBundle 'Lokaltog/vim-powerline'		" かっこいいステータスライン(old)
-NeoBundle 'bling/vim-airline'			" かっこいいステーラスライン(new)
-let g:airline_left_sep=''			" fontパッチを当ててないので
-let g:airline_right_sep=''			" 左右のセパレータを削除する
-let g:airline_theme='molokai'			" カラースキーマ
-" ------------------------------------------------------------------------------
-" textobj
-" ------------------------------------------------------------------------------
-NeoBundle 'kana/vim-textobj-user'		" ベースプラグイン
-NeoBundle 'saihoooooooo/vim-textobj-space'	" aS  iS  連続スペース
-NeoBundle 'kana/vim-textobj-entire'		" ae  ie  バッファ全体
-NeoBundle 'thinca/vim-textobj-between'		" af  if  任意の文字の囲み
-NeoBundle 'kana/vim-textobj-line'		" al  il  カーソル行
-NeoBundle 'deton/textobj-mbboundary.vim'	" am  im  ASCIIとmultibyteの境界
-NeoBundle 'osyo-manga/vim-textobj-multiblock'	" asb isb 任意の複数カッコ(囲み)
-NeoBundle 'mattn/vim-textobj-url'		" au  iu  URL
-NeoBundle 'kana/vim-textobj-syntax'		" ay  iy  シンタックス
-" NeoBundle 'mattn/vim-textobj-cell'		" ac  ic  前後スペースを除く行?
-" NeoBundle 'kana/vim-textobj-function'		" af  if  関数
-" NeoBundle 'sgur/vim-textobj-parameter'	" a,  i,  関数の引数
-" NeoBundle 'h1mesuke/textobj-wiw'		" a,w i,w snake_case 上の word
-" NeoBundle 'thinca/vim-textobj-comment'	" ac  ic  コメント
-" ------------------------------------------------------------------------------
-" Input Method Control
-" ------------------------------------------------------------------------------
-" NeoBundle 'vim-scripts/fcitx.vim'		" normalモードでIM(fcitx) OFF
-" NeoBundle 'fuenor/im_control.vim'		" normalモードでIM(ibus等) OFF
-" inoremap <silent> <C-j> <C-r>=IMState('FixMode')<CR>| "<C-j> で日本語切り替え
-" let IM_CtrlIBusPython=1			" PythonによるIBus制御指定
-" ------------------------------------------------------------------------------
-" Algin
-" ------------------------------------------------------------------------------
-NeoBundle 'vim-scripts/Align'			" テーブルやソースコードの整形
-let g:Align_xstrlen=3				" 日本語対応 (不完全らしい)
-" ------------------------------------------------------------------------------
-" vimshell
-" ------------------------------------------------------------------------------
-NeoBundle 'Shougo/vimshell', { 'depends': ['Shougo/vimproc'],
-\ 'autoload': {'commands': ['VimShellPop']}}
-let g:vimshell_prompt_expr =
-\ 'escape(fnamemodify(getcwd(), ":~").">", "\\[]()?! ")." "'
-let g:vimshell_prompt_pattern = '^\%(\f\|\\.\)\+> '
-nnoremap <Leader>s :<C-u>VimShellPop<CR>|	" \s でシェルを開く
-" ------------------------------------------------------------------------------
-" vimfiler
-" ------------------------------------------------------------------------------
-NeoBundle 'Shougo/vimfiler', { 'depends': ['Shougo/unite.vim'],
-\ 'autoload': {'commands': ['VimFilerExplorer']}}
-let g:vimfiler_as_default_explorer=1		" デフォルトに設定
-let g:vimfiler_safe_mode_by_default=0		" safe mode を無効にして開く
-nnoremap [vimfiler]    <Nop>|			" vimfiler ショートカット
-nmap     <Space>f [vimfiler]|			" <Space>f で prefix
-nnoremap [vimfiler]b :<C-u>VimFilerBufferDir<CR>|
-nnoremap [vimfiler]c :<C-u>VimFilerCurrentDir<CR>|
-nnoremap [vimfiler]e :<C-u>VimFilerExplorer -horizontal<CR>|
-" ------------------------------------------------------------------------------
-" YankRing
-" ------------------------------------------------------------------------------
-NeoBundle 'vim-scripts/YankRing.vim'		" Yank の履歴を順番に参照
-let g:yankring_history_file='.yankring' 	" 履歴を隠しファイルに
-set clipboard& clipboard+=unnamedplus,unnamed	" Yank でクリップボードへコピー
-nnoremap [yankring] <Nop>|			" YankRing ショートカット
-nmap     <Space>y [yankring]|			" <Space>y で prefix
-nnoremap [yankring]l :<C-u>YRShow<CR>|		" <Space>yl で Ring 一覧
-nnoremap [yankring]c :<C-u>YRClear<CR>|		" <Space>yc で Ring 削除
-nnoremap [yankring]s :<C-u>YRSearch<Space>|	" <space>ys で Ring 検索
-" ------------------------------------------------------------------------------
-" neocomplete/neocomplcache
-" ------------------------------------------------------------------------------
-if has('lua') && ((v:version >= 704) || (v:version >= 703 && has('patch885')))
-  NeoBundleLazy 'Shougo/neocomplete.vim', {'autoload': {'insert': 1}}
-  let g:neocomplete#enable_at_startup=1			" 起動時に有効化
-  let s:hooks = neobundle#get_hooks("neocomplete.vim")
-  function! s:hooks.on_source(bundle)
-    " let g:neocomplete#auto_completion_start_length=9	" 自動補完を抑止(通常2)
-    let g:neocomplete#enable_smart_case=1		" 大文字小文字の賢い補完
-    " <C-Space>起動<C-y>確定<C-e>キャンセル<C-g>戻す<C-l>シェル補完
-    inoremap <expr><C-Space> neocomplete#manual_omni_complete()|
-    inoremap <expr><C-y> neocomplete#close_popup()|
-    inoremap <expr><C-e> pumvisible() ? neocomplete#cancel_popup() : "\<End>"|
-    inoremap <expr><C-g> neocomplete#undo_completion()|
-    inoremap <expr><C-l> neocomplete#complete_common_string()
-  endfunction
-else
-  NeoBundleLazy 'Shougo/neocomplcache.vim', {'autoload': {'insert': 1}}
-  let g:neocomplcache_enable_at_startup=1		" 起動時に有効化
-  let s:hooks = neobundle#get_hooks("neocomplcache.vim")
-  function! s:hooks.on_source(bundle)
-    " let g:neocomplcache_auto_completion_start_length=9" 自動補完を抑止(通常2)
-    let g:neocomplcache_enable_smart_case=1		" 大文字小文字の賢い補完
-    " <C-Space>起動<C-y>確定<C-e>キャンセル<C-g>戻す<C-l>シェル補完
-    inoremap <expr><C-Space> neocomplcache#manual_omni_complete()|
-    inoremap <expr><C-y> neocomplcache#close_popup()|
-    inoremap <expr><C-e> pumvisible() ? neocomplcache#cancel_popup() : "\<End>"|
-    inoremap <expr><C-g> neocomplcache#undo_completion()|
-    inoremap <expr><C-l> neocomplcache#complete_common_string()
-  endfunction
-endif
-" ------------------------------------------------------------------------------
-" neosnippet
-" ------------------------------------------------------------------------------
-NeoBundleLazy "Shougo/neosnippet.vim", {
-\ "depends": ["honza/vim-snippets"], "autoload": {"insert": 1}}
-let s:hooks = neobundle#get_hooks("neosnippet.vim")
-function! s:hooks.on_source(bundle)
-  " see. https://github.com/Shougo/neosnippet.vim
-  " Plugin key-mappings.
-  imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  xmap <C-k>     <Plug>(neosnippet_expand_target)
-  " SuperTab like snippets behavior.
-  imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-  \ "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-  smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-  \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-  " For snippet_complete marker.
-  if has('conceal')
-    set conceallevel=2 concealcursor=i
-  endif
-  " Enable snipMate compatibility feature.
-  let g:neosnippet#enable_snipmate_compatibility = 1
-  " Tell Neosnippet about the other snippets
-  let g:neosnippet#snippets_directory=
-  \ '~/.vim/bundle/vim-snippets/snippets,~/.vim/snippets'
-endfunction
-" ------------------------------------------------------------------------------
-" quickrun
-" ------------------------------------------------------------------------------
-NeoBundle 'thinca/vim-quickrun'			" \r で script 実行(非同期)
-let g:quickrun_config = {}
-let g:quickrun_config['_'] =
-\ {'runmode': 'async:remote:vimproc' }		" vimproc で非同期実行
-let g:quickrun_config['ghmarkdown'] =
-\ {'type': 'markdown/pandoc', 'outputter': 'browser',
-\  'cmdopt': '-s -c ~/.vim/misc/markdown.css --self-contained'}
-let g:quickrun_config['html'] =
-\ {'command': 'cat', 'exec': ['%c %s'], 'outputter': 'browser'}
-" ------------------------------------------------------------------------------
-" gundo
-" ------------------------------------------------------------------------------
-if has("persistent_undo")
-  NeoBundle 'sjl/gundo.vim'			" git reflog のような履歴管理
-  let g:gundo_preview_bottom=1			" diffを真下に開く
-  let g:gundo_right=1				" logを右に開く
-  nnoremap <Leader>g :<C-u>GundoToggle<CR>|	" \g でトグル
-endif
-" ------------------------------------------------------------------------------
-" vim-ref (man, pydoc, webpage reference)
-" ------------------------------------------------------------------------------
-NeoBundle 'thinca/vim-ref'
-" webdict サイト定義
-let g:ref_source_webdict_sites = {
-\ 'je'  : {'url': 'http://dictionary.infoseek.ne.jp/jeword/%s'},
-\ 'ej'  : {'url': 'http://dictionary.infoseek.ne.jp/ejword/%s'},
-\ 'wiki': {'url': 'http://ja.wikipedia.org/wiki/%s'           },
-\ 'alc' : {'url': 'http://eow.alc.co.jp/%s/UTF-8/'            },
-\}
-let g:ref_source_webdict_sites.default = 'alc'	" デフォルトサイト
-let g:ref_source_webdict_cmd = 'w3m -dump %s'	" w3m で出力(lynxより見やすい)
-"出力に対するフィルタ。(ページの不要な)最初の数行を削除
-function! g:ref_source_webdict_sites.je.filter(output)
-  return join(split(a:output, "\n")[15:], "\n")
-endfunction
-function! g:ref_source_webdict_sites.ej.filter(output)
-  return join(split(a:output, "\n")[15:], "\n")
-endfunction
-function! g:ref_source_webdict_sites.alc.filter(output)
-  return join(split(a:output, "\n")[35:], "\n")
-endfunction
-function! g:ref_source_webdict_sites.wiki.filter(output)
-  return join(split(a:output, "\n")[17:], "\n")
-endfunction
-nnoremap [ref] <Nop>|					" Ref ショートカット
-nmap     <Space>r [ref]|				" <Space>r で prefix
-nnoremap [ref]rj :<C-u>Ref webdict je<Space>|		" <Space>rj で和英
-nnoremap [ref]re :<C-u>Ref webdict ej<Space>|		" <Space>re で英和
-nnoremap [ref]ra :<C-u>Ref webdict alc<Space>|		" <Space>ra で alc
-nnoremap [ref]rw :<C-u>Ref webdict wiki<Space>|		" <Space>rw でwikipedia
-" <Space>K で webdict (alc) で検索 (visual/normal 両対応)
-nnoremap <silent> <Space>K :<C-u>call ref#jump('normal', 'webdict')<CR>
-vnoremap <silent> <Space>K :<C-u>call ref#jump('visual', 'webdict')<CR>
-" ------------------------------------------------------------------------------
-" html
-" ------------------------------------------------------------------------------
-NeoBundle 'othree/html5.vim'			" html5 completion
-NeoBundle 'hail2u/vim-css3-syntax'		" css syntax highlight
-NeoBundle 'mattn/emmet-vim'			" effective html coding
-NeoBundle 'jelera/vim-javascript-syntax'	" javascript syntax highlight
-" ------------------------------------------------------------------------------
-" vim-jedi (python code completion)
-" ------------------------------------------------------------------------------
-" NeoBundleLazy 'davidhalter/jedi-vim', {'autoload': {'filetypes': ['python']}}
-" let g:jedi#auto_initialize=0			" 自動初期化
-" let g:jedi#auto_vim_configuration=0		" preview抑止のため自動設定無効
-" let g:jedi#popup_select_first=0		" 最初の候補を選択しない
-" let g:jedi#popup_on_dot=0			" .(dot)でpopupさせない
-" let g:jedi#rename_command='<Leader>R'		" quickrunと被るため大文字(\R)に
-" let g:jedi#goto_command='<Leader>G'		" gundoと被るため大文字(\G)に
-" ------------------------------------------------------------------------------
-" multi-lang/python syntax checker
-" ------------------------------------------------------------------------------
-" NeoBundle 'scrooloose/syntastic'		" live multi-lang syntax checker
-" let g:syntastic_enable_signs=0		" 左端 tips (ガタつくので非表示)
-" NeoBundle 'nvie/vim-flake8'			" static python syntax checker
-" ------------------------------------------------------------------------------
-" markdown
-" ------------------------------------------------------------------------------
-NeoBundle 'tyru/open-browser.vim'		" browser opener
-NeoBundle 'tpope/vim-markdown'			" markdown
-NeoBundle 'jtratner/vim-flavored-markdown'	" ghmarkdown (gfm format)
-NeoBundle 'kumattau/previm'			" markdown browswer preview
-NeoBundle 'kannokanno/vimtest'			" testing framework (using previm)
-autocmd vimrc BufNewFile,BufRead *.md,*.markdown,*.mdown,*.mkd,*.mkdn
-\ setlocal filetype=ghmarkdown			" ghmarkdown で開く
-nnoremap <Leader>q :<C-u>PrevimOpen<CR>|	" \q で preview
-" ------------------------------------------------------------------------------
-" pukiwiki
-" ------------------------------------------------------------------------------
-NeoBundle 'syngan/vim-pukiwiki'			" pukiwiki page editor
-let g:pukiwiki_config={
-    \   "localhost" : {
-    \       "url" : "http://localhost/pukiwiki/",
-    \       "top" : "FrontPage",
-    \   },
-    \}
-let g:pukiwiki_timestamp_update=1		" 書込時にタイムスタンプを更新
-" ------------------------------------------------------------------------------
-" other lightweight markup languages
-" ------------------------------------------------------------------------------
-NeoBundle 'timcharper/textile.vim'		" textile syntax
-NeoBundle 'Rykka/riv.vim'			" reStructuredText syntax
-NeoBundle 'dagwieers/asciidoc-vim'		" asciidoc syntax
-" ------------------------------------------------------------------------------
-" git
-" ------------------------------------------------------------------------------
-NeoBundle 'gregsexton/gitv'
-NeoBundle 'tpope/vim-fugitive'
+let g:airline_left_sep=''		" fontパッチを当ててないので
+let g:airline_right_sep=''		" 左右のセパレータを削除する
+let g:airline_theme='molokai'		" カラースキーマ
 
-" ------------------------------------------------------------------------------
-" yank to remote (require ClipboardTextListener)
-" http://yskwkzhr.blogspot.jp/2011/04/copying-remote-screen-paste-buffer.html
-" http://blog.remora.cx/2011/08/yank-to-local-clipboard-from-vim-on-screen.html
-" ------------------------------------------------------------------------------
-let g:y2r_config = {
-\ 'tmp_file': '/tmp/exchange_file',
-\ 'key_file': expand('$HOME') . '/.exchange.key',
-\ 'host'    : 'localhost',
-\ 'port'    : 52224,
-\}
-function! Yank2Remote()
-  call writefile(split(@", '\n'), g:y2r_config.tmp_file, 'b')
-  let s:params = ['cat %s %s | nc -w1 %s %s']
-  for s:item in ['key_file', 'tmp_file', 'host', 'port']
-    let s:params += [shellescape(g:y2r_config[s:item])]
-  endfor
-  let s:ret = system(call(function('printf'), s:params))
-endfunction
-nnoremap <silent> <Leader>y :call Yank2Remote()<CR>
-
-filetype plugin indent on		" Required by Neobundle
-NeoBundleCheck				" Install Check by NeoBundle
