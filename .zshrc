@@ -43,7 +43,7 @@ __export_best_term ()
         fi
     done
 }
-__export_best_term screen-256color xterm-256color xterm-color xterm
+__export_best_term xterm-256color xterm-color xterm
 # ------------------------------------------------------------------------------
 # terminal color theme
 # ------------------------------------------------------------------------------
