@@ -45,19 +45,42 @@ __export_best_term ()
 }
 __export_best_term screen-256color xterm-256color xterm-color xterm
 # ------------------------------------------------------------------------------
-# COLOR THEME (https://github.com/sona-tar/terminal-color-theme)
+# terminal color theme
 # ------------------------------------------------------------------------------
-autoload -U colors; colors
-if [ -e ~/.dircolors ]
-then
-    eval $(dircolors -b ~/.dircolors)
-elif [ -e ~/.terminal-color-theme ]
-then
-    local theme="molokai"
-    source ~/.terminal-color-theme/color-theme-$theme/$theme.sh
-    eval $(dircolors -b)
-fi
-unset theme
+# https://github.com/sona-tar/terminal-color-theme
+__change_terminal_color_theme()
+{
+    local theme=$1
+    if [ -e ~/.terminal-color-theme ]
+    then
+        source ~/.terminal-color-theme/color-theme-$theme/$theme.sh
+    fi
+}
+__change_terminal_color_theme tangotango
+# ------------------------------------------------------------------------------
+# LS_COLORS
+# ------------------------------------------------------------------------------
+eval $(dircolors -b)
+
+# https://github.com/trapd00r/LS_COLORS
+__export_ls_colors_by_dircolors()
+{
+    if [ -e ~/.dircolors ]
+    then
+        eval $(dircolors -b ~/.dircolors)
+    fi
+}
+# https://github.com/sharkdp/vivid
+__export_ls_colors_by_vivid()
+{
+    local theme=$1
+    if which vivid >/dev/null 2>&1
+    then
+        export LS_COLORS="$(vivid generate $theme)"
+    fi
+}
+# __export_ls_colors_by_dircolors
+# __export_ls_colors_by_vivid solarized-dark
 # ------------------------------------------------------------------------------
 # プロンプト
 # ------------------------------------------------------------------------------
