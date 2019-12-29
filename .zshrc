@@ -87,7 +87,7 @@ __export_ls_colors_by_vivid()
 # 文字列に明るい色を割り当てる
 # http://kakurasan.ehoh.net/summary/palette.color256.term.html
 # https://stackoverflow.com/questions/15682537/ansi-color-specific-rgb-sequence-bash
-__key2color() {
+__str2color_256b() {
     local arg="$1"
     local cmd
 
@@ -139,17 +139,76 @@ __key2color() {
 
     return 1
 }
+# https://gist.github.com/XVilka/8346728
+__str2color_true() {
+    local arg="$1"
+    local cmd
+
+    local i
+    local j
+
+    local key
+
+    for cmd in sha1sum md5sum cksum sum
+    do
+        if which $cmd >/dev/null 2>&1
+        then
+            break
+        fi
+    done
+
+    key=""
+    for ((j = 0; j < 100; j++))
+    do
+        key="$key$arg"
+
+        local sig=$(echo "$key" | $cmd | awk '{print $1}')
+        local len=$(printf "$sig" | wc -c)
+
+        for ((i = 1; i + 5 <= len; i++))
+        do
+            local R=$(printf "%d" "0x"$(echo $sig | cut -c$((i + 0)),$((i + 1))))
+            local G=$(printf "%d" "0x"$(echo $sig | cut -c$((i + 2)),$((i + 3))))
+            local B=$(printf "%d" "0x"$(echo $sig | cut -c$((i + 4)),$((i + 5))))
+            # グレースケールは省く
+            if ((R == G && G == B))
+            then
+                continue
+            fi
+            # 青系はディレクトリの配色と被るので省く
+            if ((R < B || G < B))
+            then
+                continue
+            fi
+            # GBR 値の合計が大きい(明るい)場合、採用する
+            if ((128 < R && 128 < G && 128 < B))
+            then
+                echo "$R;$G;$B"
+                return 0
+            fi
+        done
+    done
+
+    return 1
+}
 # 配色テスト関数(引数の文字列をカラー番号に変換して色付きで表示)
-__print_key2color() {
+__print_str2color() {
     local str
+    local col
+    local lbl
     for str in "$@"
     do
-        local col="$(__key2color $str)"
-        local lbl="$(printf "%3d %s" $col $str)"
+        col="$(__str2color_256b $str)"
+        lbl="$(printf "%3d %s" $col $str)"
         echo -e "\e[38;5;${col}m${lbl}\e[m"
+
+        col="$(__str2color_true $str)"
+        lbl="$(printf "%s %s" $col $str)"
+        echo -e "\e[38;2;${col}m${lbl}\e[m"
     done
 }
-local __clr=$'%{\e[38;5;'$(__key2color ${HOST%%.*})'m%}'
+#local __clr=$'%{\e[38;5;'$(__str2color_256b ${HOST%%.*})'m%}'
+local __clr=$'%{\e[38;2;'$(__str2color_true ${HOST%%.*})'m%}'
 local __rst=$'%{\e[m%}'
 PROMPT="%n@%m:%~$ "			# debian 風 (user@host:path$)
 PROMPT="$__clr$PROMPT$__rst"		# ホスト名で色をつける
